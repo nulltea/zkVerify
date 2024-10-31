@@ -44,14 +44,21 @@ pub mod pallet {
     pub use hp_poe::MaxStorageAttestations;
     use hp_poe::{InherentError, InherentType, INHERENT_IDENTIFIER};
 
+    use frame_support::PalletId;
+    use ismp::dispatcher::{DispatchPost, DispatchRequest, FeeMetadata, IsmpDispatcher};
+    use ismp::host::StateMachine;
+    use pallet_ismp::ModuleId;
+    use sp_runtime::traits::Zero;
+
     #[derive(Clone, TypeInfo, PartialEq, Eq, Encode, Decode, Debug)]
     pub enum AttestationPathRequestError {
         ProofNotFound(u64, sp_core::H256),
         AttestationIdNotPublished(u64),
     }
+    pub const RECEIVING_MESSAGE_MODULE_ID: ModuleId = ModuleId::Pallet(PalletId(*b"RECE-FEE"));
 
     #[pallet::config]
-    pub trait Config: frame_system::Config + timestamp::Config {
+    pub trait Config: frame_system::Config + timestamp::Config + pallet_ismp::Config {
         /// Because this pallet emits events, it depends on the runtime's definition of an event.
         type RuntimeEvent: From<Event<Self>> + IsType<<Self as frame_system::Config>::RuntimeEvent>;
         /// Minimum number of leaves in the tree that triggers the attestation publishing
@@ -62,6 +69,9 @@ pub mod pallet {
         type MaxStorageAttestations: Get<MaxStorageAttestations>;
         /// The weight definition for this pallet
         type WeightInfo: WeightInfo;
+        /// [`IsmpDispatcher`] implementation
+        type IsmpDispatcher: IsmpDispatcher<Account = Self::AccountId, Balance = Self::Balance>
+            + Default;
     }
 
     impl<T: Config> hp_poe::OnProofVerified for Pallet<T> {
@@ -106,6 +116,13 @@ pub mod pallet {
     #[pallet::error]
     pub enum Error<T> {
         TooEarlyForASmallTree,
+        MessageDispatchFailed,
+    }
+
+    impl<T> Default for Pallet<T> {
+        fn default() -> Self {
+            Self(PhantomData)
+        }
     }
 
     #[pallet::call(weight(<T as Config>::WeightInfo))]
@@ -138,7 +155,26 @@ pub mod pallet {
                 Values::<T>::iter_key_prefix(id).collect::<BTreeSet<_>>(),
             );
 
-            Self::deposit_event(Event::NewAttestation { id, attestation });
+            let origin = ensure_signed(origin)?;
+
+            let post = DispatchPost {
+                dest: StateMachine::Evm(11155111), //sepolia
+                from: RECEIVING_MESSAGE_MODULE_ID.to_bytes(),
+                to: b"0x209f82A06172a8d96CF2c95aD8c42316E80695c1".to_vec(),
+                timeout: 0, // message never expire
+                body: b"Hello from polkadot".to_vec(),
+            };
+
+            let dispatcher = T::IsmpDispatcher::default();
+            dispatcher
+                .dispatch_request(
+                    DispatchRequest::Post(post.clone()),
+                    FeeMetadata {
+                        payer: origin.clone(), // The account which paid for this request
+                        fee: Zero::zero(),     // The fee that was paid for relayers.
+                    },
+                )
+                .map_err(|_| Error::<T>::MessageDispatchFailed)?;
 
             // Prune old attestations
             // Rationale: ids are incremental, no more than one attestation
@@ -163,6 +199,32 @@ pub mod pallet {
                 OldestAttestation::<T>::set(limit);
             }
 
+            Ok(().into())
+        }
+
+        #[pallet::call_index(1)]
+        pub fn test_msg(origin: OriginFor<T>) -> DispatchResultWithPostInfo {
+            log::trace!("test_msg");
+            let origin = ensure_signed(origin)?;
+
+            let post = DispatchPost {
+                dest: StateMachine::Evm(11155111), //sepolia
+                from: RECEIVING_MESSAGE_MODULE_ID.to_bytes(),
+                to: b"0x209f82A06172a8d96CF2c95aD8c42316E80695c1".to_vec(),
+                timeout: 0, // message never expire
+                body: b"Hello from polkadot".to_vec(),
+            };
+
+            let dispatcher = T::IsmpDispatcher::default();
+            dispatcher
+                .dispatch_request(
+                    DispatchRequest::Post(post.clone()),
+                    FeeMetadata {
+                        payer: origin.clone(), // The account which paid for this request
+                        fee: Zero::zero(),     // The fee that was paid for relayers.
+                    },
+                )
+                .map_err(|_| Error::<T>::MessageDispatchFailed)?;
             Ok(().into())
         }
     }

@@ -71,4 +71,14 @@ impl<T: frame_system::Config> pallet_poe::WeightInfo for ZKVWeight<T> {
             .saturating_add(T::DbWeight::get().reads(67_u64))
             .saturating_add(T::DbWeight::get().writes(34_u64))
     }
+
+    fn test_msg() -> Weight {
+        // Proof Size summary in bytes:
+        //  Measured:  `7040`
+        //  Estimated: `166545`
+        // Minimum execution time: 219_108_000 picoseconds.
+        Weight::from_parts(251_585_000, 166545)
+            .saturating_add(RocksDbWeight::get().reads(67_u64))
+            .saturating_add(RocksDbWeight::get().writes(34_u64))
+    }
 }
