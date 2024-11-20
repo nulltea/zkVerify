@@ -32,7 +32,7 @@ jobs:
 
       - name: Restore common cache
         if: ${{ !env.ACT && inputs.CACHING_MODE == 'CACHE_RESTORE' }}
-        uses: actions/cache/restore@v3
+        uses: buildjet/cache/restore@v3
         with:
           path: |
             ~/.cargo/bin/
@@ -40,11 +40,11 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             deps/
-          key: common-cache
+          key: test-common-cache
     
       - name: Restore coverage cache
         if: ${{ !env.ACT && inputs.CACHING_MODE == 'CACHE_RESTORE' }}
-        uses: actions/cache/restore@v3
+        uses: buildjet/cache/restore@v3
         with:
           path: |
             target/
@@ -68,7 +68,7 @@ jobs:
 
       - name: Save coverage cache
         if: ${{ !env.ACT && inputs.CACHING_MODE == 'CACHE_SAVE' }}
-        uses: actions/cache/save@v3
+        uses: buildjet/cache/save@v3
         with:
           path: |
             target/

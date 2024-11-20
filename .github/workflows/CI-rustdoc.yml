@@ -30,7 +30,7 @@ jobs:
 
       - name: Restore common cache
         if: ${{ !env.ACT && inputs.CACHING_MODE == 'CACHE_RESTORE' }}
-        uses: actions/cache/restore@v3
+        uses: buildjet/cache/restore@v3
         with:
           path: |
             ~/.cargo/bin/
@@ -38,7 +38,7 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             deps/
-          key: common-cache
+          key: build-common-cache
     
       - name: Set docker env vars
         run: |
