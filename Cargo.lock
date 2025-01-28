@@ -4673,9 +4673,9 @@ dependencies = [
 
 [[package]]
 name = "grandpa-verifier"
-version = "0.1.1"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d00fddb62ec7e429d283c9d17dd83346df9a0c012d554f3fb8a47958921b2716"
+checksum = "c1cde0b634d2bdee4814e97069f2a7f21a2cbfd4a8bdfbbb15a4d1662b8f5ae5"
 dependencies = [
  "anyhow",
  "derive_more 0.99.18",
@@ -4691,14 +4691,14 @@ dependencies = [
  "sp-std",
  "sp-storage",
  "sp-trie",
- "substrate-state-machine",
+ "substrate-state-machine 15.0.0",
 ]
 
 [[package]]
 name = "grandpa-verifier-primitives"
-version = "0.1.1"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "011cd8f7019cc3141794e2fcebbc8f1a2137d7580711f5a27d8f8d965b1fb6d8"
+checksum = "0a0a23cc4c73a93fda6d04748f47159c2c2183f0aa8e61a3dd58a25f361a8352"
 dependencies = [
  "anyhow",
  "finality-grandpa",
@@ -5644,7 +5644,7 @@ dependencies = [
  "grandpa-verifier",
  "grandpa-verifier-primitives",
  "ismp",
- "pallet-ismp",
+ "pallet-ismp 1.15.1",
  "parity-scale-codec",
  "primitive-types",
  "scale-info",
@@ -5653,7 +5653,7 @@ dependencies = [
  "sp-io",
  "sp-runtime",
  "sp-trie",
- "substrate-state-machine",
+ "substrate-state-machine 1.15.1",
 ]
 
 [[package]]
@@ -8206,7 +8206,7 @@ dependencies = [
  "ismp-grandpa",
  "log",
  "pallet-balances",
- "pallet-ismp",
+ "pallet-ismp 1.15.1",
  "pallet-timestamp",
  "parity-scale-codec",
  "rstest",
@@ -8297,6 +8297,30 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-ismp"
+version = "15.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "06e2c662add3018095f2833d0329c95b28edee796d29cb2c5ed904581ddcafad"
+dependencies = [
+ "anyhow",
+ "fortuples",
+ "frame-benchmarking",
+ "frame-support",
+ "frame-system",
+ "ismp",
+ "log",
+ "parity-scale-codec",
+ "scale-info",
+ "serde",
+ "sp-api",
+ "sp-core",
+ "sp-io",
+ "sp-mmr-primitives",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
 name = "pallet-ismp-rpc"
 version = "1.15.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -8309,7 +8333,7 @@ dependencies = [
  "hex-literal 0.3.4",
  "ismp",
  "jsonrpsee",
- "pallet-ismp",
+ "pallet-ismp 1.15.1",
  "pallet-ismp-runtime-api",
  "parity-scale-codec",
  "sc-client-api",
@@ -8334,7 +8358,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6168bc6b8689ab8fcd7530db477af6910b712ceb93cf4b3e1332bbba87d8e710"
 dependencies = [
  "ismp",
- "pallet-ismp",
+ "pallet-ismp 1.15.1",
  "parity-scale-codec",
  "primitive-types",
  "serde",
@@ -9051,7 +9075,7 @@ checksum = "4e69bf016dc406eff7d53a7d3f7cf1c2e72c82b9088aac1118591e36dd2cd3e9"
 dependencies = [
  "bitcoin_hashes",
  "rand 0.8.5",
- "rand_core 0.6.4",
+ "rand_core 0.4.2",
  "serde",
  "unicode-normalization",
 ]
@@ -15229,7 +15253,27 @@ dependencies = [
  "frame-support",
  "hash-db",
  "ismp",
- "pallet-ismp",
+ "pallet-ismp 1.15.1",
+ "parity-scale-codec",
+ "primitive-types",
+ "scale-info",
+ "serde",
+ "sp-consensus-aura",
+ "sp-consensus-babe",
+ "sp-runtime",
+ "sp-trie",
+]
+
+[[package]]
+name = "substrate-state-machine"
+version = "15.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c9d183786a8d02e2a5b422aeabab39165872e33d76ed9fe24e3ccd7be80b6c62"
+dependencies = [
+ "frame-support",
+ "hash-db",
+ "ismp",
+ "pallet-ismp 15.0.0",
  "parity-scale-codec",
  "primitive-types",
  "scale-info",
@@ -16273,9 +16317,9 @@ version = "1.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "97fee6b57c6a41524a810daee9286c02d7752c4253064d0b05472833a438f675"
 dependencies = [
- "cfg-if 1.0.0",
+ "cfg-if 0.1.10",
  "digest 0.10.7",
- "rand 0.8.5",
+ "rand 0.4.6",
  "static_assertions",
 ]
 
@@ -17639,7 +17683,7 @@ dependencies = [
  "pallet-groth16-verifier",
  "pallet-hyperbridge-aggregations",
  "pallet-im-online",
- "pallet-ismp",
+ "pallet-ismp 1.15.1",
  "pallet-ismp-runtime-api",
  "pallet-message-queue",
  "pallet-multisig",
